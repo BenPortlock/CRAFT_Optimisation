@@ -7,7 +7,7 @@ This repo is intended to demonstrate some of the techniques available for optimi
 **27 Jul, 2025**: Initial commit with support for cpu, mps, and coreml inference on both single and batch inputs.
 
 #### Requirements
-- PyTorch==2.5.0
+- torch==2.5.0
 - torchvision==0.20.0
 - opencv-python==4.12.0.88
 - coremltools==8.3.0
