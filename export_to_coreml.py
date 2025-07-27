@@ -6,13 +6,14 @@ from collections import OrderedDict
 
 
 def load_model_class(model_module, class_name):
-
+    
     module = importlib.import_module(model_module)
     model_class = getattr(module, class_name)
     return model_class
 
 
 def copyStateDict(state_dict):
+    
     if list(state_dict.keys())[0].startswith("module"):
         start_idx = 1
     else:
