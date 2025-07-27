@@ -13,6 +13,7 @@ def list_files(in_path):
     img_files = []
     mask_files = []
     gt_files = []
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     for (dirpath, dirnames, filenames) in os.walk(in_path):
         for file in filenames:
             filename, ext = os.path.splitext(file)
