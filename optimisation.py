@@ -213,7 +213,7 @@ if __name__ == "__main__":
 
     if device == "coreml":
         print("\nLoading CoreML Model")
-        net = ct.models.MLModel("CoreML_CRAFT_NN.mlmodel")
+        net = ct.models.MLModel("weights/CoreML_CRAFT.mlpackage")
     else:
         print(f"Loading {device.capitalize()} Model")
         net = CRAFT()

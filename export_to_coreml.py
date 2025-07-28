@@ -130,9 +130,5 @@ model_inputs = [inputs.name for inputs in model_spec.description.input]
 model_outputs = [outputs.name for outputs in model_spec.description.output]
 
 print(f"\nModel exported and saved to {coreml_file_name}")
-print(
-    f"Model inputs are provided as a dictionary with the following keys: {model_inputs}"
-)
-print(
-    f"Model outputs are stored as a dictionary with the following keys: {model_outputs}\n"
-)
+print(f"Provide inputs as a dictionary with the key(s): {model_inputs}")
+print(f"Outputs returned as a dictionary with the key(s): {model_outputs}")
