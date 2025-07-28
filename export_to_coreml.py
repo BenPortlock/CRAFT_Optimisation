@@ -1,3 +1,4 @@
+import os
 import torch
 import argparse
 import importlib
@@ -6,14 +7,14 @@ from collections import OrderedDict
 
 
 def load_model_class(model_module, class_name):
-    
+
     module = importlib.import_module(model_module)
     model_class = getattr(module, class_name)
     return model_class
 
 
 def copyStateDict(state_dict):
-    
+
     if list(state_dict.keys())[0].startswith("module"):
         start_idx = 1
     else:
@@ -24,6 +25,9 @@ def copyStateDict(state_dict):
         new_state_dict[name] = v
     return new_state_dict
 
+
+if not os.path.isdir("weights"):
+    os.mkdir("weights")
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -89,29 +93,43 @@ example_input = torch.rand(1, 3, args.frame_height, args.frame_width)
 example_input = example_input.to(args.device)
 traced_model = torch.jit.trace(model, example_input)
 
-# Define the input shapes accepted by the model in format (B C H W)
-# Using ct.RangeDim allows the batch size to vary within the range
-acceptable_shape = ct.Shape(
-    shape=(ct.RangeDim(
-        lower_bound=args.batch_min,
-        upper_bound=args.batch_max),
-        3,
-        args.frame_height,
-        args.frame_width))
+# Define the input shapes accepted by the model in format (B C H W).
+# Using ct.RangeDim allows the model to accept multiple batch sizes, however, this produces an ".mlpackage" file which cannot be quantised.
+# Static batch size produces an ".mlmodel" file which can be quantised.
+if args.batch_min == args.batch_max:
+    file_ext = "mlmodel"
+    format = "neuralnetwork"
+    input_shape = example_input.shape
+else:
+    file_ext = "mlpackage"
+    format = "mlprogram"
+    input_shape = ct.Shape(
+        shape=(
+            ct.RangeDim(
+                lower_bound=args.batch_min,
+                upper_bound=args.batch_max),
+            3,
+            args.frame_height,
+            args.frame_width
+        )
+    )
 
 print("Exporting the model to CoreML")
-cmlmodel = ct.convert(
+coreml_model = ct.convert(
     traced_model,
-    inputs=[ct.TensorType(shape=acceptable_shape)],
+    inputs=[ct.TensorType(shape=input_shape)],
     # Set compute_units as "ct.ComputeUnit.ALL" to allow gpu and neural engine use with cpu fallback as required
     compute_units=ct.ComputeUnit.ALL,
+    convert_to=format
 )
-cmlmodel.save(f"CoreML_{args.model_name}.mlpackage")
-model_spec = ct.utils.load_spec(f"CoreML_{args.model_name}.mlpackage")
+
+coreml_file_name = f"weights/CoreML_{args.model_name}.{file_ext}"
+coreml_model.save(coreml_file_name)
+model_spec = ct.utils.load_spec(coreml_file_name)
 model_inputs = [inputs.name for inputs in model_spec.description.input]
 model_outputs = [outputs.name for outputs in model_spec.description.output]
 
-print(f"\nModel exported and saved to CoreML_{args.model_name}.mlpackage")
+print(f"\nModel exported and saved to {coreml_file_name}")
 print(
     f"Model inputs are provided as a dictionary with the following keys: {model_inputs}"
 )

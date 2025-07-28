@@ -16,6 +16,7 @@ import coremltools as ct
 
 
 def copyStateDict(state_dict):
+
     if list(state_dict.keys())[0].startswith("module"):
         start_idx = 1
     else:
@@ -212,7 +213,7 @@ if __name__ == "__main__":
 
     if device == "coreml":
         print("\nLoading CoreML Model")
-        net = ct.models.MLModel("CoreML_CRAFT.mlpackage")
+        net = ct.models.MLModel("CoreML_CRAFT_NN.mlmodel")
     else:
         print(f"Loading {device.capitalize()} Model")
         net = CRAFT()
