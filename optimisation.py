@@ -125,7 +125,8 @@ def batch_inference(net, batch, text_threshold, link_threshold, low_text, device
         if device == "coreml":
             output = net.predict({"x": inference_batch})
             batch_ys = output["var_506"]
-            batch_features = output["input_137"]
+            # batch_features = output["input_137"]
+            batch_features = None
         else:
             batch_ys, batch_features = net(inference_batch)
         inf_end = time.time()
@@ -136,7 +137,8 @@ def batch_inference(net, batch, text_threshold, link_threshold, low_text, device
     score_text_batch = []
     for result_no in range(batch_size):
         y = batch_ys[result_no:result_no+1]
-        feature = batch_features[result_no:result_no+1]
+        # feature = batch_features[result_no:result_no+1]
+        feature = None
         ratio_w = ratio_w_batch[result_no]
         ratio_h = ratio_h_batch[result_no]
         polys, score_text = postprocess_result(
@@ -213,7 +215,7 @@ if __name__ == "__main__":
 
     if device == "coreml":
         print("\nLoading CoreML Model")
-        net = ct.models.MLModel("weights/CoreML_CRAFT.mlpackage")
+        net = ct.models.MLModel("weights/CoreML_CRAFT_W8A8.mlpackage")
     else:
         print(f"Loading {device.capitalize()} Model")
         net = CRAFT()
@@ -270,9 +272,8 @@ if __name__ == "__main__":
 
     print("Beginning Model Testing")
     start_time = time.time()
-    batch_num = 0
+    img_count = 0
     for input_batch, path_batch in zip(loaded_batches, image_path_batches):
-        batch_num += 1
         polys_batch, score_text_batch = batch_inference(
             net,
             input_batch,
@@ -287,8 +288,9 @@ if __name__ == "__main__":
         )
         for image, polys, score_text, image_path in zip(input_batch, polys_batch, score_text_batch, path_batch):
             save_output(image_path, score_text, image, polys)
+            img_count += 1
             print(
-                f"Finished Inference For {(args.batch_size * batch_num)}/{num_images} Images", end="\r"
+                f"Finished Inference For {(img_count)}/{num_images} Images", end="\r"
             )
 
     elapsed_time = time.time() - start_time

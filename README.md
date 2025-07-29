@@ -7,6 +7,7 @@ This repo is intended to demonstrate some of the techniques available for optimi
 ## Updates
 
 **27 Jul, 2025**: Initial commit with support for cpu, mps, and coreml inference on both single and batch inputs.
+**29 Jul, 2025**: Refactored export_to_coreml.py and quantise_coreml.py, and added support for W8A8 quantisation in the latter
 
 #### Requirements
 

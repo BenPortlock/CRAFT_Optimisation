@@ -80,7 +80,6 @@ print("Exporting the model to CoreML")
 coreml_model = ct.convert(
     traced_model,
     inputs=[ct.TensorType(shape=input_shape)],
-
     # Set compute_units as "ct.ComputeUnit.ALL" to allow gpu and neural engine use with cpu fallback as required
     compute_units=ct.ComputeUnit.ALL,
     convert_to="mlprogram",
@@ -88,7 +87,7 @@ coreml_model = ct.convert(
     minimum_deployment_target=ct.target.macOS15
 )
 
-coreml_file_name = "weights/DUMMY_CoreML_CRAFT_FP32.mlpackage"
+coreml_file_name = "weights/CoreML_CRAFT_FP16.mlpackage"
 coreml_model.save(coreml_file_name)
 model_spec = ct.utils.load_spec(coreml_file_name)
 model_inputs = [inputs.name for inputs in model_spec.description.input]
