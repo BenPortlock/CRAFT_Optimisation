@@ -16,6 +16,7 @@ This repo is intended to demonstrate some of the techniques available for optimi
 - torchvision==0.20.0
 - opencv-python==4.12.0.88
 
-##### Required For Full Functionality
+##### Required For Mac Functionality
 
+- MacOS>=15
 - coremltools==8.3.0
