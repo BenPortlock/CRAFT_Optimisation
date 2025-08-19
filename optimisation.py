@@ -267,7 +267,8 @@ if __name__ == "__main__":
     if device == "coreml":
         output = net.predict({"x": warmup_array})
     else:
-        warmup_array = torch.from_numpy(warmup_array).to(device)
+        warmup_array = torch.from_numpy(
+            warmup_array.astype(np.float32)).to(device)
         net(warmup_array)
 
     print("Beginning Model Testing")

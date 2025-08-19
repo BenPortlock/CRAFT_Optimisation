@@ -35,7 +35,7 @@ trimmed_model.save(trimmed_model_path)
 # Now that we have removed the problematic node, we can quantise the model to W8A8 (8-bit weights and activations).
 # To quantise the model activations, we need to pass calibration data through the model in the same format that it would normally accept.
 loaded_images = []
-image_list, _, _ = file_utils.get_files("calibration_images")
+image_list, _, _ = file_utils.get_files("training_images")
 for k, image_path in enumerate(image_list):
     image = imgproc.loadImage(image_path)
     loaded_images.append(image)
