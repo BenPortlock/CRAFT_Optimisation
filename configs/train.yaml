@@ -1,0 +1,38 @@
+experiment_name: "exp1"
+checkpoint_dir: "./ckpt"
+data_dir: "./data"
+device: "mps"
+eval: True
+epochs: 20
+batch_size: 1
+lr: 1e-4
+model:
+  path: ""
+  state_dict: False
+data:
+  canvas_size: 1280
+  mag_ratio: 1.5
+loss:
+  CRAFT_loss:
+    enabled: False
+    affinity_weight: 1
+  OHEM_loss:
+    enabled: True
+    neg_ratio: 0.3
+    num_min_neg: 5000
+  distillation:
+    enabled: False
+    lambda: 0
+    temperature: 2
+    teacher:
+      path: "./weights/craft_mlt_25k.pth"
+      state_dict: False
+log_results:
+  enabled: True
+  visualise:
+    enabled: True
+    text_threshold: 0.7
+    link_threshold: 0.4
+    low_text: 0.4
+    batch_size: 1
+  log_uri: ""

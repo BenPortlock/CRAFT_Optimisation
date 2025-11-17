@@ -1,3 +1,18 @@
+# Python
 *.pyc
-old_code/git
-figures
+*__pycache__
+
+# Tensorboard Logs
+logs
+
+# Data
+# data/train
+# data/val
+# data/test
+# data/check_boxes.py
+
+# Weights
+models/weights/*
+
+# Disused Code
+old_code*
